@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feliz Día de San Valentín ❤️</title>
+    <style>
+        /* General Styles */
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            flex-direction: column;
+            background-color: #ffcccb;
+            text-align: center;
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 40px 20px 20px; /* Added padding-top to avoid overlap */
+            position: relative;
+            overflow: hidden;
+        }
+
+        h1 {
+            color: #d63384;
+            font-size: 2em;
+            margin: 0 0 20px; /* Adjusted margins */
+            padding: 0 20px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        #message {
+            display: none;
+            font-size: 1.5em;
+            color: #c71585;
+            margin: 20px 0 60px;
+            padding: 0 20px;
+            text-align: center;
+        }
+
+        /* Pop-up Styles */
+        #popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            max-width: 90%;
+            width: 400px;
+            text-align: left;
+        }
+
+        #popup h2 {
+            color: #d63384;
+            margin-top: 0;
+        }
+
+        #popup p {
+            color: #333;
+            line-height: 1.6;
+        }
+
+        #close-popup {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: none;
+            border: none;
+            font-size: 1.5em;
+            cursor: pointer;
+            color: #d63384;
+        }
+
+        #close-popup:hover {
+            color: #ff69b4;
+        }
+
+        /* Overlay Styles */
+        #overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+
+        button {
+            background-color: #ff69b4;
+            color: white;
+            padding: 10px 20px;
+            font-size: 1.2em;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: transform 0.2s ease;
+        }
+
+        button:hover {
+            background-color: #d63384;
+            transform: scale(1.1);
+        }
+
+        /* Carousel Styles */
+        .carousel-container {
+            width: 90%;
+            max-width: 800px; /* Adjusted for PC */
+            height: 500px; /* Adjusted for PC */
+            overflow: hidden;
+            position: relative;
+            margin: 20px auto;
+        }
+
+        .carousel-slide {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            display: none;
+        }
+
+        .carousel-slide iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .carousel-slide.active {
+            display: block;
+        }
+
+        /* Carousel Navigation Buttons */
+        .carousel-nav {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            transform: translateY(-50%);
+            display: flex;
+            justify-content: space-between;
+            pointer-events: none; /* Allow clicks to pass through */
+        }
+
+        .carousel-nav button {
+            background-color: #ff69b4;
+            color: white;
+            padding: 10px;
+            font-size: 1.5em;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+            pointer-events: auto; /* Enable clicks on buttons */
+            z-index: 100; /* Ensure buttons are above the carousel */
+        }
+
+        .carousel-nav button:hover {
+            background-color: #d63384;
+            transform: scale(1.1);
+        }
+
+        /* Heart Animation */
+        .heart {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 100px;
+            animation: heartbeat 1s ease-in-out infinite alternate;
+            display: none;
+        }
+
+        @keyframes heartbeat {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.2);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        /* Decorative Border */
+        .decorative-border {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .decorative-border .star,
+        .decorative-border .flower {
+            position: absolute;
+            font-size: 30px;
+        }
+
+        .decorative-border .star {
+            color: gold;
+        }
+
+        .decorative-border .flower {
+            color: pink;
+        }
+
+        /* Positioning the Border Elements */
+        /* Top Edge */
+        .decorative-border .star:nth-child(1) {
+            top: 10px;
+            left: 10%;
+        }
+
+        .decorative-border .flower:nth-child(2) {
+            top: 10px;
+            left: 30%;
+        }
+
+        .decorative-border .star:nth-child(3) {
+            top: 10px;
+            left: 50%;
+        }
+
+        .decorative-border .flower:nth-child(4) {
+            top: 10px;
+            left: 70%;
+        }
+
+        .decorative-border .star:nth-child(5) {
+            top: 10px;
+            left: 90%;
+        }
+
+        /* Right Edge */
+        .decorative-border .flower:nth-child(6) {
+            top: 20%;
+            right: 10px;
+        }
+
+        .decorative-border .star:nth-child(7) {
+            top: 40%;
+            right: 10px;
+        }
+
+        .decorative-border .flower:nth-child(8) {
+            top: 60%;
+            right: 10px;
+        }
+
+        .decorative-border .star:nth-child(9) {
+            top: 80%;
+            right: 10px;
+        }
+
+        /* Bottom Edge */
+        .decorative-border .flower:nth-child(10) {
+            bottom: 10px;
+            left: 10%;
+        }
+
+        .decorative-border .star:nth-child(11) {
+            bottom: 10px;
+            left: 30%;
+        }
+
+        .decorative-border .flower:nth-child(12) {
+            bottom: 10px;
+            left: 50%;
+        }
+
+        .decorative-border .star:nth-child(13) {
+            bottom: 10px;
+            left: 70%;
+        }
+
+        .decorative-border .flower:nth-child(14) {
+            bottom: 10px;
+            left: 90%;
+        }
+
+        /* Left Edge */
+        .decorative-border .star:nth-child(15) {
+            top: 20%;
+            left: 10px;
+        }
+
+        .decorative-border .flower:nth-child(16) {
+            top: 40%;
+            left: 10px;
+        }
+
+        .decorative-border .star:nth-child(17) {
+            top: 60%;
+            left: 10px;
+        }
+
+        .decorative-border .flower:nth-child(18) {
+            top: 80%;
+            left: 10px;
+        }
+
+        /* Responsive Design */
+        @media only screen and (max-width: 600px) {
+            body {
+                padding: 40px 10px 10px; /* Adjusted padding for mobile */
+            }
+
+            h1 {
+                font-size: 1.8em;
+                margin: 0 0 10px;
+                padding: 0 15px;
+            }
+
+            #message {
+                font-size: 1.2em;
+                margin: 10px 0 40px;
+                padding: 0 10px;
+            }
+
+            .carousel-container {
+                height: 250px; /* Smaller carousel for mobile */
+                max-width: 80%; /* Adjust width for mobile */
+            }
+
+            .carousel-nav button {
+                font-size: 1.2em; /* Smaller buttons for mobile */
+                padding: 8px;
+            }
+
+            #popup {
+                width: 90%;
+                padding: 15px;
+            }
+
+            .decorative-border .star,
+            .decorative-border .flower {
+                font-size: 25px; /* Smaller decorative elements for mobile */
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Feliz Día de San Valentín, Mi Amor ❤️</h1>
+    <div class="carousel-container">
+        <div class="carousel-slide active">
+            <iframe src="https://drive.google.com/file/d/1BNSpvdYWoTYnd-O9E46Q08C4IbBAN67m/preview" allow="autoplay"></iframe>
+        </div>
+        <div class="carousel-slide">
+            <iframe src="https://drive.google.com/file/d/1x5r5zdOCSGonL0M31Lih9OhKRXJQiQcX/preview" allow="autoplay"></iframe>
+        </div>
+        <div class="carousel-slide">
+            <iframe src="https://drive.google.com/file/d/1ic3YsCayuVu1jI7iNSZTSWeIG4Gd6hcC/preview" allow="autoplay"></iframe>
+        </div>
+        <div class="carousel-slide">
+            <iframe src="https://drive.google.com/file/d/1q2fwz4Qw1SThjQ0tHKau1mseGBErsPCk/preview" allow="autoplay"></iframe>
+        </div>
+        <div class="carousel-slide">
+            <iframe src="https://drive.google.com/file/d/1UtHcBPZ3YBWVCReZTZfs7HoqA-qNViYe/preview" allow="autoplay"></iframe>
+        </div>
+        <div class="carousel-slide">
+            <iframe src="https://drive.google.com/file/d/1_RyXOyRULfj6NAm99ZPMVV0MhAFoFOaM/preview" allow="autoplay"></iframe>
+        </div>
+        <div class="carousel-slide">
+            <iframe src="https://drive.google.com/file/d/1-usMj6AKyNymXfiTeSKqBfMwuKFATQa6/preview" allow="autoplay"></iframe>
+        </div>
+        <div class="carousel-slide">
+            <iframe src="https://drive.google.com/file/d/1Du9abqqgEkRAH6iKRPXkMeSAa-8TDgQD/preview" allow="autoplay"></iframe>
+        </div>
+        <div class="carousel-slide">
+            <iframe src="https://drive.google.com/file/d/1x_KQnHptRwzxUdmdCh5Kh6vcvkNxZn-m/preview" allow="autoplay"></iframe>
+        </div>
+        <div class="carousel-slide">
+            <iframe src="https://drive.google.com/file/d/1-M6tG17mwjXF8U0oKheiRbmzhdzaj6hV/preview" allow="autoplay"></iframe>
+        </div>
+    </div>
+    <div class="carousel-nav">
+        <button onclick="prevSlide()">❮</button>
+        <button onclick="nextSlide()">❯</button>
+    </div>
+    <button onclick="showHeartAnimation()">Toca para una sorpresa</button>
+    <p id="message">¡Eres la persona más increíble de mi vida! 😘💖</p>
+    <audio id="music" src="https://www.bensound.com/bensound-music/bensound-romantic.mp3" loop></audio>
+
+    <!-- Pop-up -->
+    <div id="overlay"></div>
+    <div id="popup">
+        <button id="close-popup">&times;</button>
+        <h2>Mi Querida Carol,</h2>
+        <p>
+            Desde el momento en que entraste en mi vida, todo cambió para mejor. Eres la luz que ilumina mis días y la razón por la que mi corazón late con tanta fuerza. Cada risa, cada mirada, cada momento a tu lado es un regalo que atesoro profundamente.
+        </p>
+        <p>
+            Eres mi compañera, mi confidente y mi mayor inspiración. No puedo imaginar mi vida sin ti, porque contigo todo tiene sentido. Gracias por ser tan increíble, por amarme tal como soy y por hacerme el hombre más feliz del mundo.
+        </p>
+        <p>
+            Te amo más de lo que las palabras pueden expresar, y hoy, en este día especial, quiero recordarte que siempre estaré a tu lado, en las buenas y en las malas. Eres mi todo, Carol, y siempre lo serás.
+        </p>
+        <p>Con todo mi amor,</p>
+        <p>[Tu Nombre]</p>
+    </div>
+
+    <!-- Decorative Border -->
+    <div class="decorative-border">
+        <!-- Top Edge -->
+        <div class="star">⭐️</div>
+        <div class="flower">🌸</div>
+        <div class="star">⭐️</div>
+        <div class="flower">🌸</div>
+        <div class="star">⭐️</div>
+
+        <!-- Right Edge -->
+        <div class="flower">🌸</div>
+        <div class="star">⭐️</div>
+        <div class="flower">🌸</div>
+        <div class="star">⭐️</div>
+
+        <!-- Bottom Edge -->
+        <div class="flower">🌸</div>
+        <div class="star">⭐️</div>
+        <div class="flower">🌸</div>
+        <div class="star">⭐️</div>
+        <div class="flower">🌸</div>
+
+        <!-- Left Edge -->
+        <div class="star">⭐️</div>
+        <div class="flower">🌸</div>
+        <div class="star">⭐️</div>
+        <div class="flower">🌸</div>
+    </div>
+
+    <!-- Heart Emoji -->
+    <div class="heart" id="pounding-heart">❤️</div>
+
+    <script>
+        const carouselContainer = document.querySelector('.carousel-container');
+        const carouselSlides = carouselContainer.querySelectorAll('.carousel-slide');
+        let currentIndex = 0;
+
+        function showSlide(index) {
+            carouselSlides.forEach((slide, i) => {
+                slide.classList.toggle('active', i === index);
+            });
+        }
+
+        function nextSlide() {
+            currentIndex = (currentIndex + 1) % carouselSlides.length;
+            showSlide(currentIndex);
+        }
+
+        function prevSlide() {
+            currentIndex = (currentIndex - 1 + carouselSlides.length) % carouselSlides.length;
+            showSlide(currentIndex);
+        }
+
+        // Show the first slide initially
+        showSlide(currentIndex);
+
+        function showHeartAnimation() {
+            const poundingHeart = document.getElementById('pounding-heart');
+            poundingHeart.style.display = 'block';
+            document.getElementById('message').style.display = 'block';
+            document.getElementById('overlay').style.display = 'block';
+            document.getElementById('popup').style.display = 'block';
+            document.getElementById('music').play();
+
+            setTimeout(() => {
+                poundingHeart.style.display = 'none';
+            }, 1000);
+        }
+
+        // Close pop-up
+        document.getElementById('close-popup').addEventListener('click', () => {
+            document.getElementById('overlay').style.display = 'none';
+            document.getElementById('popup').style.display = 'none';
+        });
+    </script>
+</body>
+</html>
